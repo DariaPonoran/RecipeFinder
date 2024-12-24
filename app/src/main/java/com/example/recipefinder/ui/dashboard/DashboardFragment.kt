@@ -11,14 +11,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.recipefinder.ui.home.HomeViewModel
 
 class DashboardFragment : Fragment() {
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Replace Fragment's view with Compose UI
         requireActivity().setContent {
             DashboardScreen()
         }
@@ -27,59 +29,30 @@ class DashboardFragment : Fragment() {
 
 @Composable
 fun DashboardScreen() {
+    val dashViewModel: DashboardViewModel = viewModel()
+    val text by dashViewModel.text.observeAsState("")
+    val searchQuery by dashViewModel.searchQuery.observeAsState("")
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = "Favorites",
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier.padding(8.dp)
-        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        SearchBar(
+            query = searchQuery,
+            onQueryChange = { dashViewModel.updateSearchQuery(it) },
+            onSearch = { /* Handle Search Action */ })
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        repeat(4) { index ->
-            RecipeItem(title = "Recipe ${index + 1}")
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-    }
-}
-
-@Composable
-fun RecipeItem(title: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .height(60.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween // To place heart on the right
-    ) {
-        // Image placeholder on the left
-        Box(
-            modifier = Modifier
-                .size(60.dp) // Adjust the size of the placeholder
-
-        ) {
-            // You can replace this with an actual Image using Coil or other image loading library
-        }
-
-        // Column for title and time
-        Column(
-            modifier = Modifier.weight(1f) // Takes up remaining space between the image and icon
-        ) {
-            Text(text = title, style = MaterialTheme.typography.body1)
-            Text(text = "20 min.", style = MaterialTheme.typography.body2)
-        }
-
-        // Heart icon on the right
-        Icon(
-            Icons.Default.Favorite,
-            contentDescription = "Favorite Icon",
-            tint = Color.Red,
-            modifier = Modifier.size(40.dp)
+        Text(
+            text = text,
+            style = MaterialTheme.typography.body1,
+            modifier = Modifier.padding(8.dp)
         )
+        Spacer(modifier = Modifier.height(16.dp))
+
     }
 }
+

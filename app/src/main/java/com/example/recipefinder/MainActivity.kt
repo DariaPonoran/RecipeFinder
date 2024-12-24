@@ -14,9 +14,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
@@ -61,24 +63,24 @@ fun MainScreen() {
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     BottomNavigation(
-        backgroundColor = MaterialTheme.colors.primarySurface,
+        backgroundColor = Color.Gray,
         contentColor = MaterialTheme.colors.onPrimary
     ) {
         BottomNavigationItem(
             selected = false, // You can handle selected state dynamically if needed
             onClick = { navController.navigate("home") },
             icon = {
-                Icon(Icons.Default.Home, contentDescription = "Home")
+                Icon(Icons.Default.Favorite, contentDescription = "Faves")
             },
-            label = { Text("Home") }
+            label = { Text("Faves") }
         )
         BottomNavigationItem(
             selected = false,
             onClick = { navController.navigate("dashboard") },
             icon = {
-                Icon(Icons.Default.Favorite, contentDescription = "Dashboard")
+                Icon(Icons.Default.Search, contentDescription = "Find")
             },
-            label = { Text("Dashboard") }
+            label = { Text("Find") }
         )
     }
 }
