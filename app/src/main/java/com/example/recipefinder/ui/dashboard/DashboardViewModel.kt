@@ -31,15 +31,31 @@ class DashboardViewModel : ViewModel() {
     }
     val searchQuery: LiveData<String> = _searchQuery
 
-    fun updateText(newText: String) {
-        _text.value = newText
+    private val _searchResult = MutableLiveData<String>().apply {
+        value = ""
     }
+    val searchResult: LiveData<String> = _searchResult
+
+    private val _isSearching = MutableLiveData<Boolean>().apply {
+        value = false
+    }
+    val isSearching: LiveData<Boolean> = _isSearching
 
     fun updateSearchQuery(newQuery: String) {
         _searchQuery.value = newQuery
+        _isSearching.value = true
+    }
+
+    fun performSearch(query: String) {
+        if (query.isNotEmpty()) {
+            _isSearching.value = false
+            _searchResult.value = "Search result for '$query'"
+        } else {
+            _isSearching.value = false
+            _searchResult.value = "No results"
+        }
     }
 }
-
 
 @Composable
 fun SearchBar(query: String, onQueryChange: (String) -> Unit, onSearch: () -> Unit) {

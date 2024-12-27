@@ -16,8 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 class HomeFragment : Fragment() {
@@ -29,12 +27,13 @@ class HomeFragment : Fragment() {
         }
     }
 }
+
 @Composable
 fun HomeScreen() {
     val homeViewModel: HomeViewModel = viewModel()
     val text by homeViewModel.text.observeAsState("")
     val searchQuery by homeViewModel.searchQuery.observeAsState("")
-
+    val searchResult by homeViewModel.searchResult.observeAsState("")
 
     Column(
         modifier = Modifier
@@ -43,7 +42,11 @@ fun HomeScreen() {
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
-        SearchBar(query = searchQuery, onQueryChange = { homeViewModel.updateSearchQuery(it) }, onSearch = { /* Handle Search Action */ })
+        SearchBar(
+            query = searchQuery,
+            onQueryChange = { homeViewModel.updateSearchQuery(it) },
+            onSearch = { homeViewModel.searchRecipe(searchQuery) }
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -52,14 +55,21 @@ fun HomeScreen() {
             style = MaterialTheme.typography.body1,
             modifier = Modifier.padding(8.dp)
         )
+
         Spacer(modifier = Modifier.height(16.dp))
 
-        repeat(4) { index ->
-            RecipeItem(title = "Recipe ${index + 1}")
-            Spacer(modifier = Modifier.height(8.dp))
+        if (searchResult.isNotEmpty()) {
+            Text(text = "Search Result: $searchResult", style = MaterialTheme.typography.body1)
+        } else if (searchQuery.isEmpty()) {
+            repeat(4) { index ->
+                RecipeItem(title = "Recipe ${index + 1}")
+                Spacer(modifier = Modifier.height(8.dp))
+            }
         }
     }
 }
+
+
 @Composable
 fun RecipeItem(title: String) {
     Row(
