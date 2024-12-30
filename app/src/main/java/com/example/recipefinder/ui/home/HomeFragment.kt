@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -16,6 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 class HomeFragment : Fragment() {
@@ -31,7 +35,6 @@ class HomeFragment : Fragment() {
 @Composable
 fun HomeScreen() {
     val homeViewModel: HomeViewModel = viewModel()
-    val text by homeViewModel.text.observeAsState("")
     val searchQuery by homeViewModel.searchQuery.observeAsState("")
     val searchResult by homeViewModel.searchResult.observeAsState("")
 
@@ -51,9 +54,14 @@ fun HomeScreen() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = text,
-            style = MaterialTheme.typography.body1,
-            modifier = Modifier.padding(8.dp)
+            text = "Favorites",
+            style = TextStyle(
+                fontWeight = FontWeight.W700,
+                fontSize = 38.sp,
+                lineHeight = 38.4.sp,
+            ),
+            modifier = Modifier
+                .padding(0.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -69,41 +77,56 @@ fun HomeScreen() {
     }
 }
 
-
 @Composable
 fun RecipeItem(title: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .height(80.dp)
-            .border(1.dp, Color.Gray, shape = com. example. recipefinder. ui. theme.Shapes.large)
-            .background(Color.White, shape = RoundedCornerShape(18.dp))
-            .padding(8.dp),
+            .height(88.dp)
+            .background(Color.White, shape = RoundedCornerShape(topStart = 16.dp))
+            .border(1.dp, Color.LightGray, shape = RoundedCornerShape(16.dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .size(80.dp)
-                .border(1.dp, Color.LightGray, shape = RoundedCornerShape(18.dp))
-        ) {
-            // Placeholder for an image
-        }
+                .size(88.dp)
+                .background(Color.LightGray, shape = RoundedCornerShape(16.dp))
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
         Column(
-            modifier = Modifier.weight(1f)
-                .padding(10.dp)
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
         ) {
-            Text(text = title, style = MaterialTheme.typography.body1)
-            Text(text = "20 min.", style = MaterialTheme.typography.body2)
+            Text(
+                modifier = Modifier.padding(top = 12.dp)
+                    .weight(1f),
+                text = title,
+                style = MaterialTheme.typography.body1.copy(
+                    fontWeight = FontWeight.W700
+                )
+            )
+            Text(
+                modifier = Modifier.padding(bottom = 22.dp),
+                text = "20 min.",
+                style = MaterialTheme.typography.body2
+            )
         }
 
+        var isSelected by remember { mutableStateOf(false) }
+
         Icon(
-            Icons.Default.Favorite,
+            imageVector = Icons.Default.Favorite,
             contentDescription = "Favorite Icon",
-            tint = Color.Red,
+            tint = if (isSelected) Color.LightGray else Color(0xFF6B4E9C),
             modifier = Modifier
-                .size(40.dp)
-                .align(Alignment.CenterVertically)
+                .size(30.dp)
+                .padding(end = 6.dp)
+                .clickable {
+                    isSelected = !isSelected
+                }
         )
     }
 }

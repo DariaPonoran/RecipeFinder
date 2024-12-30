@@ -9,6 +9,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 class DashboardFragment : Fragment() {
@@ -46,8 +49,13 @@ fun DashboardScreen() {
 
         Text(
             text = text,
-            style = MaterialTheme.typography.body1,
-            modifier = Modifier.padding(8.dp)
+            style = TextStyle(
+                fontWeight = FontWeight.W700,
+                fontSize = 38.sp,
+                lineHeight = 38.4.sp,
+            ),
+            modifier = Modifier
+                .padding(0.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
