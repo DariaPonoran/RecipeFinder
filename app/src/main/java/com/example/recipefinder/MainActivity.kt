@@ -13,18 +13,16 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.primarySurface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import androidx.navigation.compose.rememberNavController
 import com.example.recipefinder.ui.dashboard.DashboardScreen
 import com.example.recipefinder.ui.home.HomeScreen
+import com.example.recipefinder.ui.home.RecipeDetailScreen
 import com.example.recipefinder.ui.theme.RecipeFinderTheme
 
 class MainActivity : ComponentActivity() {
@@ -51,14 +49,19 @@ fun MainScreen() {
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = "home", // Default screen is home
+            startDestination = "home",
             modifier = Modifier.padding(paddingValues)
         ) {
-            composable("home") { HomeScreen() }
+            composable("home") { HomeScreen(navController) }
             composable("dashboard") { DashboardScreen() }
+            composable("recipeDetail/{recipeTitle}") { backStackEntry ->
+                val recipeTitle = backStackEntry.arguments?.getString("recipeTitle") ?: ""
+                RecipeDetailScreen(navController, recipeTitle)
+            }
         }
     }
 }
+
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
@@ -67,7 +70,7 @@ fun BottomNavigationBar(navController: NavHostController) {
         contentColor = MaterialTheme.colors.onPrimary
     ) {
         BottomNavigationItem(
-            selected = false, // You can handle selected state dynamically if needed
+            selected = false,
             onClick = { navController.navigate("home") },
             icon = {
                 Icon(Icons.Default.Favorite, contentDescription = "Faves")
@@ -84,3 +87,5 @@ fun BottomNavigationBar(navController: NavHostController) {
         )
     }
 }
+
+

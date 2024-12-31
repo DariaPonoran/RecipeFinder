@@ -1,11 +1,13 @@
 package com.example.recipefinder.ui.home
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.fragment.app.Fragment
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,23 +19,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 class HomeFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        requireActivity().setContent {
-            HomeScreen()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                val navController = rememberNavController()
+                HomeScreen(navController)
+            }
         }
     }
 }
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
     val homeViewModel: HomeViewModel = viewModel()
     val searchQuery by homeViewModel.searchQuery.observeAsState("")
     val searchResult by homeViewModel.searchResult.observeAsState("")
@@ -70,7 +80,8 @@ fun HomeScreen() {
             Text(text = "Search Result: $searchResult", style = MaterialTheme.typography.body1)
         } else if (searchQuery.isEmpty()) {
             repeat(4) { index ->
-                RecipeItem(title = "Recipe ${index + 1}")
+                RecipeItem(title = "Recipe ${index + 1}",
+                onClick = { navController.navigate("recipeDetail/Recipe${index + 1}") })
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
@@ -78,11 +89,12 @@ fun HomeScreen() {
 }
 
 @Composable
-fun RecipeItem(title: String) {
+fun RecipeItem(title: String, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(88.dp)
+            .clickable { onClick() }
             .background(Color.White, shape = RoundedCornerShape(topStart = 16.dp))
             .border(1.dp, Color.LightGray, shape = RoundedCornerShape(16.dp)),
         verticalAlignment = Alignment.CenterVertically
